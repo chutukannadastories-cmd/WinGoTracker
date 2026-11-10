@@ -1,9 +1,9 @@
+
 name: Build WinGoTracker APK
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
   workflow_dispatch:
 
 jobs:
@@ -14,6 +14,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Extract Android Project
+        run: unzip -q WinGoTrackerAndroid_Mobile_Build.zip -d .
+
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
@@ -23,14 +26,15 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
-          gradle-version: '8.7'
+          gradle-version: '8.9'
 
       - name: Build APK
-        run: gradle assembleDebug
+        run: gradle -p WinGoTrackerAndroid :app:assembleDebug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: WinGoTracker-debug-apk
-          path: app/build/outputs/apk/debug/*.apk
+          path: WinGoTrackerAndroid/app/build/outputs/apk/debug/app-debug.apk
+          
           
